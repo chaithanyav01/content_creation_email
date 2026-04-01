@@ -1,0 +1,106 @@
+**Minimal email content service (text + images + send)**
+
+---
+
+### 1. Generate HTML email (LLM)
+
+```python
+from openai import OpenAI
+client = OpenAI(api_key="YOUR_API_KEY")
+
+def generate_email(context):
+    prompt = f"""
+    Create a marketing email in HTML.
+
+    Brand: {context['brand']}
+    Offer: {context['offer']}
+    Audience: {context['audience']}
+
+    Include:
+    - Subject line
+    - Header
+    - Body
+    - CTA button
+    - Image URL placeholder
+
+    Keep it clean and responsive.
+    """
+
+    res = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    return res.choices[0].message.content
+```
+
+---
+
+### 2. Example context
+
+```python
+context = {
+    "brand": "Shawarmer",
+    "offer": "20% off on chicken wraps",
+    "audience": "Weekend food lovers"
+}
+html_email = generate_email(context)
+```
+
+---
+
+### 3. Send email (SMTP - simple)
+
+```python
+import smtplib
+from email.mime.text import MIMEText
+
+def send_email(to_email, subject, html):
+    msg = MIMEText(html, "html")
+    msg["Subject"] = subject
+    msg["From"] = "your@email.com"
+    msg["To"] = to_email
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
+        server.login("your@email.com", "APP_PASSWORD")
+        server.send_message(msg)
+
+# usage
+send_email("user@gmail.com", "🔥 20% Off Shawarmer!", html_email)
+```
+
+---
+
+### 4. Image handling
+
+* Use hosted images (S3/CDN):
+
+```html
+<img src="https://your-cdn.com/shawarmer.jpg" width="100%" />
+```
+
+---
+
+### 5. Basic pipeline
+
+```text
+Context → LLM → HTML email → inject images → send via SMTP/API
+```
+
+---
+
+### 6. Upgrade (production)
+
+* Use:
+
+  * SendGrid / SES (instead of SMTP)
+  * Templates + dynamic variables
+  * Track opens/clicks
+  * A/B test subject lines
+
+---
+
+### One-line
+
+👉 **Generate HTML via LLM + host images + send via email API.**
