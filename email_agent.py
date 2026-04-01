@@ -48,33 +48,34 @@ class EmailAgent:
             Dictionary with 'subject' and 'html' keys
         """
         prompt = f"""
-Create a professional marketing email in HTML format.
+                Create a professional marketing email in HTML format.
 
-Brand: {context.get('brand', 'Our Brand')}
-Offer: {context.get('offer', 'Special Offer')}
-Audience: {context.get('audience', 'Valued Customers')}
-Image URL: {context.get('image_url', 'https://via.placeholder.com/600x300')}
+                Brand: {context.get('brand', 'Our Brand')}
+                Offer: {context.get('offer', 'Special Offer')}
+                Audience: {context.get('audience', 'Valued Customers')}
+                Image URL: {context.get('image_url', 'https://via.placeholder.com/600x300')}
+                CTA Link: {context.get('cta_link', '#')}
 
-Requirements:
-1. Create a compelling subject line (return it separately)
-2. Design a responsive HTML email with:
-   - Professional header with brand name
-   - Hero image using the provided URL
-   - Engaging body text highlighting the offer
-   - Clear CTA (Call-to-Action) button
-   - Footer with unsubscribe placeholder
-3. Use inline CSS for email compatibility
-4. Keep the design clean and mobile-friendly
-5. Use appealing colors that match a food/restaurant brand
+                Requirements:
+                1. Create a compelling subject line (return it separately)
+                2. Design a responsive HTML email with:
+                - Professional header with brand name
+                - Hero image using the provided URL
+                - Engaging body text highlighting the offer
+                - Clear CTA (Call-to-Action) button
+                - Footer with unsubscribe placeholder
+                3. Use inline CSS for email compatibility
+                4. Keep the design clean and mobile-friendly
+                5. Use appealing colors that match a food/restaurant brand
 
-Return in this exact format:
-SUBJECT: [Your subject line here]
----HTML---
-[Your HTML code here]
-"""
+                Return in this exact format:
+                SUBJECT: [Your subject line here]
+                ---HTML---
+                [Your HTML code here]
+                """
 
         response = self.openai_client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7
         )
@@ -91,135 +92,253 @@ SUBJECT: [Your subject line here]
     def create_default_email(self, context: dict) -> dict:
         """
         Create a default template email without LLM.
-        Useful when API is unavailable or for testing.
+        Styled similar to Swiggy/Zomato food delivery apps.
         """
-#         brand = context.get('brand', 'Our Brand')
-#         offer = context.get('offer', 'Special Offer')
-#         audience = context.get('audience', 'Valued Customers')
-#         image_url = context.get('image_url', 'https://via.placeholder.com/600x300')
-#         cta_link = context.get('cta_link', '#')
+        brand = context.get('brand', 'Our Brand')
+        offer = context.get('offer', 'Special Offer')
+        audience = context.get('audience', 'Valued Customers')
+        image_url = context.get('image_url', 'https://via.placeholder.com/600x300')
+        cta_link = context.get('cta_link', '#')
 
-#         html = f"""
-# <!DOCTYPE html>
-# <html>
-# <head>
-#     <meta charset="UTF-8">
-#     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-# </head>
-# <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-#     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-#         <tr>
-#             <td align="center" style="padding: 40px 0;">
-#                 <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                    
-#                     <!-- Header -->
-#                     <tr>
-#                         <td style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); padding: 30px; text-align: center;">
-#                             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">{brand}</h1>
-#                         </td>
-#                     </tr>
-                    
-#                     <!-- Hero Image -->
-#                     <tr>
-#                         <td style="padding: 0;">
-#                             <img src="{image_url}" alt="{brand}" width="600" style="width: 100%; height: auto; display: block;">
-#                         </td>
-#                     </tr>
-                    
-#                     <!-- Body Content -->
-#                     <tr>
-#                         <td style="padding: 40px 30px;">
-#                             <h2 style="color: #333333; margin: 0 0 20px; font-size: 24px; text-align: center;">
-#                                 🎉 Exclusive Offer Just for You!
-#                             </h2>
-#                             <p style="color: #666666; font-size: 16px; line-height: 1.6; margin: 0 0 20px; text-align: center;">
-#                                 Hey {audience}! We have something special for you.
-#                             </p>
-#                             <div style="background-color: #fff8f0; border-left: 4px solid #ff6b35; padding: 20px; margin: 20px 0; border-radius: 4px;">
-#                                 <p style="color: #333333; font-size: 20px; font-weight: bold; margin: 0; text-align: center;">
-#                                     {offer}
-#                                 </p>
-#                             </div>
-#                             <p style="color: #666666; font-size: 16px; line-height: 1.6; margin: 0 0 30px; text-align: center;">
-#                                 Don't miss out on this amazing deal! Limited time only.
-#                             </p>
-                            
-#                             <!-- CTA Button -->
-#                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-#                                 <tr>
-#                                     <td align="center">
-#                                         <a href="{cta_link}" style="display: inline-block; background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: #ffffff; text-decoration: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);">
-#                                             Order Now →
-#                                         </a>
-#                                     </td>
-#                                 </tr>
-#                             </table>
-#                         </td>
-#                     </tr>
-                    
-#                     <!-- Footer -->
-#                     <tr>
-#                         <td style="background-color: #f8f8f8; padding: 30px; text-align: center; border-top: 1px solid #eeeeee;">
-#                             <p style="color: #999999; font-size: 14px; margin: 0 0 10px;">
-#                                 © 2024 {brand}. All rights reserved.
-#                             </p>
-#                             <p style="color: #999999; font-size: 12px; margin: 0;">
-#                                 <a href="#" style="color: #999999;">Unsubscribe</a> | 
-#                                 <a href="#" style="color: #999999;">View in Browser</a>
-#                             </p>
-#                         </td>
-#                     </tr>
-                    
-#                 </table>
-#             </td>
-#         </tr>
-#     </table>
-# </body>
-# </html>
-# """
-#         subject = f"🔥 {offer} at {brand}!"
-        context = {
-    "groom_name": "Kolavennu Manikanta Krishna Kumar",   # replace with actual name
-    "bride_name": "Shreya Garg",   # replace with actual name
-    "date": "25th April 2026",
-    "time": "7:00 PM onwards",
-    "venue": "The Grand Palace, Bangalore",
-    "address": "MG Road, Bangalore",
-    "image_url": "https://instasize.com/api/image/2be19417439be57181d023fe5f1bcd32f7b6cb18b07754d4b423f430df66c44f.webp",
-    "cta_link": "https://maps.google.com/?q=MG+Road+Bangalore"
-}
         html = f"""
+<!DOCTYPE html>
 <html>
-<body style="font-family:Georgia;text-align:center;background:#fff8f0;padding:20px;">
-
-<h1 style="color:#b76e79;">💍 Wedding Invitation 💍</h1>
-
-<h2>{context['groom_name']} ❤️ {context['bride_name']}</h2>
-
-<img src="{context['image_url']}" width="100%" style="max-width:500px;border-radius:12px;" />
-
-<p style="font-size:18px;">
-Together with their families,<br>
-<b>{context['groom_name']}</b> and <b>{context['bride_name']}</b><br>
-request the pleasure of your company<br>
-at their wedding celebration.
-</p>
-
-<p><b>Date:</b> {context['date']}</p>
-<p><b>Time:</b> {context['time']}</p>
-<p><b>Venue:</b> {context['venue']}</p>
-
-<a href="{context['cta_link']}" 
-style="padding:12px 24px;background:#b76e79;color:white;text-decoration:none;border-radius:6px;">
-View Location
-</a>
-
-<p style="margin-top:20px;">We look forward to celebrating with you ❤️</p>
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{brand} - Order Now</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; background-color: #f8f8f8;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f8f8f8;">
+        <tr>
+            <td align="center" style="padding: 20px 15px;">
+                
+                <!-- Preheader -->
+                <div style="display: none; max-height: 0; overflow: hidden;">
+                    {offer} - Order now and save big! 🍔
+                </div>
+                
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    
+                    <!-- Header Bar - Swiggy Orange Style -->
+                    <tr>
+                        <td style="background-color: #FC8019; padding: 16px 24px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td>
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">{brand}</h1>
+                                    </td>
+                                    <td align="right">
+                                        <span style="color: #ffffff; font-size: 13px; opacity: 0.9;">🕐 30 min delivery</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Hero Image -->
+                    <tr>
+                        <td style="padding: 0;">
+                            <img src="{image_url}" alt="Delicious Food" width="600" style="width: 100%; height: 220px; object-fit: cover; display: block;">
+                        </td>
+                    </tr>
+                    
+                    <!-- Offer Banner - Zomato Red Style -->
+                    <tr>
+                        <td style="padding: 0 20px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: -30px; position: relative;">
+                                <tr>
+                                    <td style="background: linear-gradient(135deg, #E23744 0%, #cb202d 100%); border-radius: 12px; padding: 20px 24px; box-shadow: 0 4px 15px rgba(226, 55, 68, 0.3);">
+                                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td>
+                                                    <p style="color: rgba(255,255,255,0.85); font-size: 12px; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">TODAY'S DEAL</p>
+                                                    <p style="color: #ffffff; font-size: 22px; margin: 0; font-weight: 700;">{offer}</p>
+                                                </td>
+                                                <td align="right" style="vertical-align: middle;">
+                                                    <div style="background: #ffffff; color: #E23744; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;">
+                                                        FLAT OFF
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Greeting -->
+                    <tr>
+                        <td style="padding: 28px 24px 0;">
+                            <h2 style="color: #1C1C1C; margin: 0 0 8px; font-size: 20px; font-weight: 700;">
+                                Hey {audience}! 👋
+                            </h2>
+                            <p style="color: #686B78; font-size: 15px; line-height: 1.5; margin: 0;">
+                                We know you're craving something delicious. Here's a special treat just for you!
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Quick Info Cards -->
+                    <tr>
+                        <td style="padding: 24px 20px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td width="33%" style="padding: 0 4px;">
+                                        <div style="background: #FAFAFA; border-radius: 10px; padding: 16px 12px; text-align: center;">
+                                            <div style="font-size: 24px; margin-bottom: 6px;">⚡</div>
+                                            <p style="color: #1C1C1C; font-size: 12px; margin: 0; font-weight: 600;">FAST</p>
+                                            <p style="color: #93959F; font-size: 11px; margin: 4px 0 0;">30 min avg</p>
+                                        </div>
+                                    </td>
+                                    <td width="33%" style="padding: 0 4px;">
+                                        <div style="background: #FAFAFA; border-radius: 10px; padding: 16px 12px; text-align: center;">
+                                            <div style="font-size: 24px; margin-bottom: 6px;">⭐</div>
+                                            <p style="color: #1C1C1C; font-size: 12px; margin: 0; font-weight: 600;">TOP RATED</p>
+                                            <p style="color: #93959F; font-size: 11px; margin: 4px 0 0;">4.5+ rating</p>
+                                        </div>
+                                    </td>
+                                    <td width="33%" style="padding: 0 4px;">
+                                        <div style="background: #FAFAFA; border-radius: 10px; padding: 16px 12px; text-align: center;">
+                                            <div style="font-size: 24px; margin-bottom: 6px;">🛡️</div>
+                                            <p style="color: #1C1C1C; font-size: 12px; margin: 0; font-weight: 600;">SAFE</p>
+                                            <p style="color: #93959F; font-size: 11px; margin: 4px 0 0;">Best practices</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Coupon Code Box -->
+                    <tr>
+                        <td style="padding: 0 24px 24px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td style="background: #FFF6E8; border: 1px dashed #FC8019; border-radius: 8px; padding: 16px;">
+                                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td width="40" style="vertical-align: middle;">
+                                                    <div style="width: 36px; height: 36px; background: #FC8019; border-radius: 50%; text-align: center; line-height: 36px;">
+                                                        <span style="font-size: 18px;">🏷️</span>
+                                                    </div>
+                                                </td>
+                                                <td style="padding-left: 12px; vertical-align: middle;">
+                                                    <p style="color: #93959F; font-size: 11px; margin: 0; text-transform: uppercase;">Use Code</p>
+                                                    <p style="color: #1C1C1C; font-size: 16px; margin: 2px 0 0; font-weight: 700; letter-spacing: 1px;">YUMMY20</p>
+                                                </td>
+                                                <td align="right" style="vertical-align: middle;">
+                                                    <span style="color: #FC8019; font-size: 12px; font-weight: 600;">COPY →</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- CTA Button -->
+                    <tr>
+                        <td style="padding: 0 24px 32px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td align="center">
+                                        <a href="{cta_link}" style="display: block; background: #60B246; color: #ffffff; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-size: 16px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            Order Now
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding-top: 12px;">
+                                        <p style="color: #93959F; font-size: 12px; margin: 0;">
+                                            🔥 Limited time offer • Valid till midnight
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 24px;">
+                            <div style="height: 1px; background: #E8E8E8;"></div>
+                        </td>
+                    </tr>
+                    
+                    <!-- App Download Section -->
+                    <tr>
+                        <td style="padding: 24px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td>
+                                        <p style="color: #1C1C1C; font-size: 14px; margin: 0 0 4px; font-weight: 600;">Get the app for best experience</p>
+                                        <p style="color: #93959F; font-size: 12px; margin: 0;">Exclusive app-only offers waiting for you!</p>
+                                    </td>
+                                    <td align="right" width="120">
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                                            <tr>
+                                                <td style="padding-right: 8px;">
+                                                    <div style="background: #1C1C1C; color: white; padding: 8px 12px; border-radius: 6px; font-size: 10px; text-align: center;">
+                                                        <span style="font-size: 14px;">🍎</span><br>iOS
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div style="background: #1C1C1C; color: white; padding: 8px 12px; border-radius: 6px; font-size: 10px; text-align: center;">
+                                                        <span style="font-size: 14px;">🤖</span><br>Android
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background: #1C1C1C; padding: 24px;">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td align="center">
+                                        <p style="color: #ffffff; font-size: 16px; margin: 0 0 4px; font-weight: 600;">{brand}</p>
+                                        <p style="color: #93959F; font-size: 12px; margin: 0 0 16px;">Delivering happiness to your doorstep 🚴</p>
+                                        
+                                        <!-- Social Icons -->
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 16px;">
+                                            <tr>
+                                                <td style="padding: 0 6px;"><a href="#" style="color: #93959F; text-decoration: none; font-size: 18px;">📸</a></td>
+                                                <td style="padding: 0 6px;"><a href="#" style="color: #93959F; text-decoration: none; font-size: 18px;">🐦</a></td>
+                                                <td style="padding: 0 6px;"><a href="#" style="color: #93959F; text-decoration: none; font-size: 18px;">📘</a></td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <p style="color: #686B78; font-size: 11px; margin: 0;">
+                                            <a href="#" style="color: #686B78; text-decoration: none;">Unsubscribe</a> &nbsp;•&nbsp;
+                                            <a href="#" style="color: #686B78; text-decoration: none;">Help</a> &nbsp;•&nbsp;
+                                            <a href="#" style="color: #686B78; text-decoration: none;">Terms</a>
+                                        </p>
+                                        <p style="color: #4A4A4A; font-size: 10px; margin: 12px 0 0;">
+                                            © 2024 {brand}. All rights reserved.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+                
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 """
-        subject = f"💍 {context['groom_name']} weds {context['bride_name']}"
+        subject = f"🍔 {offer} | Order now from {brand}!"
         return {"subject": subject, "html": html}
 
     def send_email(
@@ -314,6 +433,13 @@ View Location
         subject = email_data["subject"]
         html = email_data["html"]
 
+        # Clean up code block formatting if present
+        if html.startswith("```html"):
+            html = html.replace("```html", "").replace("```", "").strip()
+            
+        if html.endswith("```"):
+            html = html.replace("```", "").strip()
+
         print(f"\n📧 Subject: {subject}")
         print(f"📬 Sending to {len(recipients)} recipient(s)...\n")
 
@@ -345,27 +471,15 @@ def main():
         "offer": "20% off on chicken wraps",
         "audience": "Weekend food lovers",
         "image_url": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=600",
-        "cta_link": "https://shawarmer.com/order"
+        "cta_link": "https://shawarmer.com/"
     }
 
     # List of recipients
     recipients = [
         "velpulachaitu987@gmail.com"
-        # "saisharathsadu@gmail.com",
-        # "kmkkrishnakumar75@gmail.com",
-        # "saivenkat0022@gmail.com"    # Replace with actual email
     ]
 
-    # Option 1: Send using LLM-generated content
-    # results = agent.send_campaign(context, recipients, use_llm=True)
-
-    # Option 2: Send using default template (no API needed)
     results = agent.send_campaign(context, recipients, use_llm=False)
-
-    # Or send a single email manually
-    # email_content = agent.create_default_email(context)
-    # agent.send_email("user@example.com", email_content["subject"], email_content["html"])
-
 
 if __name__ == "__main__":
     main()
